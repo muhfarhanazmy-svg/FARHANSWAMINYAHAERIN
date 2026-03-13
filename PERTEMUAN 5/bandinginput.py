@@ -3,6 +3,7 @@ angka2 = int(input("Masukkan angka kedua: "))
 
 if angka1 > angka2:
     angka_besar = angka1
+    print("Angka yang lebih besar adalah:", angka_besar)
 else:
     angka_besar = angka2
 

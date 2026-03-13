@@ -9,5 +9,4 @@ elif pndptn_ptahun > 60000000:
 else:
     Tpajak = 0.05
 
-pajak = pndptn_ptahun * Tpajak
 print("tarif pajak lau:", Tpajak*100, "%")
