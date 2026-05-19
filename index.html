@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FITK Rooms — IAIN Syekh Nurjati</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d0d0d;
+  --surface: #151515;
+  --card: #1c1c1c;
+  --hover: #242424;
+  --active: #2e2e2e;
+  --green: #1DB954;
+  --green-bright: #1ed760;
+  --green-dim: rgba(29,185,84,0.12);
+  --red: #e03131;
+  --red-dim: rgba(224,49,49,0.12);
+  --amber: #f59f00;
+  --amber-dim: rgba(245,159,0,0.12);
+  --blue: #4dabf7;
+  --white: #ffffff;
+  --t1: #e0e0e0;
+  --t2: #999999;
+  --t3: #555555;
+  --border: rgba(255,255,255,0.07);
+  --sidebar-w: 220px;
+  --radius: 8px;
+}
+
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t1); font-size: 14px; overflow: hidden; }
+
+/* ── Layout ── */
+#app { display: flex; height: 100vh; }
+
+/* ── Sidebar ── */
+#sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+#sidebar::-webkit-scrollbar { width: 0; }
+
+.logo-area { padding: 16px 16px 14px; border-bottom: 1px solid var(--border); }
+.logo-icon { width: 30px; height: 30px; background: var(--green); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; margin-bottom: 8px; }
+.logo-title { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 800; color: var(--white); letter-spacing: -0.3px; }
+.logo-sub { font-size: 10.5px; color: var(--t3); margin-top: 2px; line-height: 1.4; }
+
+.nav-section { padding: 14px 16px 4px; font-size: 9.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 1.3px; color: var(--t3); }
+.nav-group { padding: 0 6px 6px; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 10px; border-radius: 6px;
+  cursor: pointer; color: var(--t2);
+  transition: all 0.15s; font-size: 13px;
+  user-select: none; line-height: 1;
+}
+.nav-item:hover { background: var(--hover); color: var(--white); }
+.nav-item.active { background: var(--green-dim); color: var(--green); font-weight: 500; }
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; stroke-width: 1.8; }
+.nav-badge { font-size: 9.5px; background: var(--green); color: #000; border-radius: 20px; padding: 1px 6px; font-weight: 700; margin-left: auto; display: none; }
+
+.sidebar-footer { margin-top: auto; padding: 12px 16px; border-top: 1px solid var(--border); font-size: 10.5px; color: var(--t3); line-height: 1.6; }
+
+/* ── Main ── */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+#topbar { display: flex; align-items: center; gap: 12px; padding: 16px 24px 0; flex-shrink: 0; }
+#page-title { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 800; color: var(--white); flex: 1; letter-spacing: 0.3px; }
+
+#content { flex: 1; overflow-y: auto; padding: 16px 24px 40px; }
+#content::-webkit-scrollbar { width: 4px; }
+#content::-webkit-scrollbar-thumb { background: var(--active); border-radius: 20px; }
+
+/* ── Pages ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 15px; border-radius: 20px; font-size: 12.5px;
+  font-weight: 500; cursor: pointer; border: none;
+  transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.btn-green { background: var(--green); color: #000; }
+.btn-green:hover { background: var(--green-bright); }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--t2); }
+.btn-outline:hover { background: var(--hover); color: var(--white); border-color: var(--t3); }
+.btn-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(224,49,49,0.2); }
+.btn-red:hover { background: rgba(224,49,49,0.22); }
+.btn-sm { padding: 4px 11px; font-size: 11.5px; }
+
+/* ── Search ── */
+.search-wrap { position: relative; }
+.search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--t3); width: 13px; height: 13px; pointer-events: none; stroke-width: 2; }
+.search-wrap input { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px 6px 30px; color: var(--t1); font-size: 12.5px; outline: none; width: 190px; transition: border 0.15s; font-family: 'DM Sans', sans-serif; }
+.search-wrap input:focus { border-color: var(--t3); }
+
+/* ── Stats ── */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; min-height: 90px; display: flex; flex-direction: column; justify-content: space-between; }
+.stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 42px; font-weight: 800; line-height: 1; color: var(--white); letter-spacing: 0.5px; }
+.stat-label { font-size: 11px; color: var(--t3); margin-top: 6px; }
+.stat-card.green .stat-num { color: var(--green); }
+.stat-card.amber .stat-num { color: var(--amber); }
+.stat-card.blue .stat-num { color: var(--blue); }
+
+/* ── Section header ── */
+.sec-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; margin-top: 20px; }
+.sec-header:first-child { margin-top: 0; }
+.sec-title { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; color: var(--white); }
+.sec-link { font-size: 11.5px; color: var(--t3); cursor: pointer; transition: 0.15s; }
+.sec-link:hover { color: var(--green); }
+
+/* ── Room grid ── */
+.room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 190px)); gap: 8px; }
+.room-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+  cursor: pointer; transition: all 0.18s;
+  position: relative; overflow: hidden;
+  min-height: 148px; display: flex; flex-direction: column; justify-content: space-between;
+}
+.room-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--green); opacity: 0; transition: opacity 0.2s;
+}
+.room-card:hover { background: var(--hover); border-color: var(--t3); transform: translateY(-2px); }
+.room-card:hover::after { opacity: 0.5; }
+.room-card.occupied::after { background: var(--red); opacity: 0.9; }
+.room-card.booked::after { background: var(--amber); opacity: 0.9; }
+.room-num { font-family: 'Barlow Condensed', sans-serif; font-size: 30px; font-weight: 800; color: var(--white); line-height: 1; letter-spacing: 0.5px; }
+.room-meta { font-size: 10.5px; color: var(--t3); margin-top: 2px; }
+.room-cap { font-size: 11px; color: var(--t2); margin-top: 8px; }
+.room-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+.tag { font-size: 9.5px; background: var(--active); color: var(--t2); border-radius: 20px; padding: 2px 7px; }
+.status-dot { display: flex; align-items: center; gap: 4px; font-size: 10.5px; margin-top: 8px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: var(--green); }
+.dot-red { background: var(--red); }
+.dot-amber { background: var(--amber); }
+
+/* ── Now strip ── */
+.now-strip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 4px; }
+.now-strip::-webkit-scrollbar { height: 3px; }
+.now-strip::-webkit-scrollbar-thumb { background: var(--active); border-radius: 20px; }
+.now-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-left: 2px solid var(--red); border-radius: var(--radius);
+  padding: 9px 12px; min-width: 155px; flex-shrink: 0;
+}
+.now-card.booked { border-left-color: var(--amber); }
+.now-card-room { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; color: var(--white); }
+.now-card-info { font-size: 10.5px; color: var(--t3); margin-top: 2px; line-height: 1.4; }
+
+/* ── Filter chips ── */
+.filter-bar { display: flex; gap: 5px; margin-bottom: 14px; flex-wrap: wrap; }
+.chip {
+  font-size: 11.5px; padding: 4px 11px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--t2); cursor: pointer; transition: 0.15s;
+}
+.chip:hover, .chip.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+
+/* ── Schedule selector ── */
+.sched-controls { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
+.sched-controls label { font-size: 11.5px; color: var(--t3); }
+select.select-field {
+  background: var(--card); border: 1px solid var(--border); border-radius: 7px;
+  padding: 6px 10px; color: var(--t1); font-size: 12.5px;
+  outline: none; font-family: 'DM Sans', sans-serif; cursor: pointer;
+}
+select.select-field:focus { border-color: var(--green); }
+select.select-field option { background: var(--surface); }
+
+/* ── Table ── */
+.data-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.data-table th { background: var(--surface); padding: 7px 12px; text-align: left; font-size: 10.5px; font-weight: 500; color: var(--t3); text-transform: uppercase; letter-spacing: 0.8px; border-bottom: 1px solid var(--border); }
+.data-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; font-size: 12.5px; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--hover); }
+.badge-green { font-size: 10px; background: var(--green-dim); color: var(--green); border-radius: 20px; padding: 2px 7px; font-weight: 500; display: inline-block; }
+.badge-amber { font-size: 10px; background: var(--amber-dim); color: var(--amber); border-radius: 20px; padding: 2px 7px; font-weight: 500; display: inline-block; }
+.td-main { font-size: 12px; color: var(--t2); }
+.td-sub { font-size: 11px; color: var(--t3); margin-top: 2px; }
+
+/* ── Form ── */
+.form-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; max-width: 540px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 11px; color: var(--t3); font-weight: 500; }
+.form-input {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 7px;
+  padding: 8px 11px; color: var(--t1); font-size: 13px;
+  outline: none; transition: border 0.15s; font-family: 'DM Sans', sans-serif; width: 100%;
+}
+.form-input:focus { border-color: var(--green); }
+.form-input::placeholder { color: var(--t3); }
+.form-input[readonly] { color: var(--t3); cursor: default; }
+.form-error { font-size: 12.5px; color: var(--red); margin-top: 10px; display: none; padding: 8px 12px; background: var(--red-dim); border-radius: 7px; border: 1px solid rgba(224,49,49,0.2); }
+
+/* ── Booking list ── */
+.booking-item {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 11px 14px; display: flex; align-items: flex-start; gap: 12px;
+  margin-bottom: 6px; transition: border 0.15s;
+}
+.booking-item:hover { border-color: var(--t3); }
+.booking-room { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 800; color: var(--white); min-width: 58px; padding-top: 2px; }
+.booking-info { flex: 1; min-width: 0; }
+.booking-id { font-size: 10px; background: var(--active); border-radius: 20px; padding: 1px 8px; color: var(--t2); display: inline-block; margin-bottom: 3px; }
+.booking-title { font-size: 13px; font-weight: 500; color: var(--t1); margin-bottom: 2px; }
+.booking-meta { font-size: 11.5px; color: var(--t3); line-height: 1.6; }
+.booking-actions { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; flex-shrink: 0; }
+.status-pill { font-size: 10.5px; padding: 2px 9px; border-radius: 20px; font-weight: 500; }
+.status-pill.aktif { background: var(--green-dim); color: var(--green); }
+.status-pill.batal { background: var(--active); color: var(--t3); }
+
+/* ── Modal ── */
+#overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  z-index: 100; display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(6px);
+}
+#overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; width: 90%; max-width: 460px; max-height: 80vh;
+  overflow-y: auto; position: relative;
+}
+.modal::-webkit-scrollbar { width: 4px; }
+.modal::-webkit-scrollbar-thumb { background: var(--active); border-radius: 20px; }
+.modal-close {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--hover); border: none; color: var(--t2);
+  width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+  font-size: 13px; display: flex; align-items: center; justify-content: center;
+  transition: 0.15s;
+}
+.modal-close:hover { background: var(--active); color: var(--white); }
+.modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: var(--white); margin-bottom: 1px; }
+.modal-sub { font-size: 11.5px; color: var(--t3); margin-bottom: 14px; }
+.modal-section { font-size: 11px; font-weight: 500; color: var(--t2); text-transform: uppercase; letter-spacing: 0.8px; margin: 12px 0 7px; }
+.modal-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.modal-field-label { font-size: 10px; color: var(--t3); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 2px; }
+.modal-field-val { font-size: 13px; color: var(--t1); }
+.chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip-small { font-size: 10.5px; background: var(--active); color: var(--t2); border-radius: 20px; padding: 2px 9px; }
+.sched-entry { padding: 7px 0; border-bottom: 1px solid var(--border); }
+.sched-entry:last-child { border-bottom: none; }
+.sched-header { display: flex; gap: 6px; align-items: center; margin-bottom: 2px; }
+.sched-day { font-size: 10.5px; background: var(--active); color: var(--t2); padding: 1px 7px; border-radius: 20px; }
+.sched-time { font-size: 11.5px; color: var(--t2); }
+.sched-name { font-size: 12.5px; color: var(--t1); }
+.sched-detail { font-size: 11px; color: var(--t3); }
+hr.divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+/* ── Toast ── */
+#toast-container { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 7px; pointer-events: none; }
+.toast {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 11px 16px; font-size: 13px; color: var(--t1);
+  animation: toastIn 0.22s ease; pointer-events: all;
+  max-width: 300px; box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+}
+.toast.green { border-color: rgba(29,185,84,0.35); background: rgba(29,185,84,0.1); color: var(--green); }
+.toast.red { border-color: rgba(224,49,49,0.35); background: rgba(224,49,49,0.1); color: var(--red); }
+.toast.out { animation: toastOut 0.22s ease forwards; }
+@keyframes toastIn { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+@keyframes toastOut { to { opacity: 0; transform: translateX(14px); } }
+
+/* ── Empty state ── */
+.empty-state { text-align: center; padding: 52px 20px; color: var(--t3); }
+.empty-icon { font-size: 36px; margin-bottom: 10px; opacity: 0.35; }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── Sidebar ── -->
+  <div id="sidebar">
+    <div class="logo-area">
+      <div class="logo-icon">🏛</div>
+      <div class="logo-title">FITK Rooms</div>
+      <div class="logo-sub">IAIN Syekh Nurjati<br>Cirebon</div>
+    </div>
+
+    <div class="nav-section">Menu</div>
+    <div class="nav-group">
+      <div class="nav-item active" id="nav-home" onclick="goTo('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Beranda
+      </div>
+      <div class="nav-item" id="nav-rooms" onclick="goTo('rooms')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Semua Ruangan
+      </div>
+      <div class="nav-item" id="nav-jadwal" onclick="goTo('jadwal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Jadwal Mingguan
+      </div>
+      <div class="nav-item" id="nav-booking" onclick="goTo('booking')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Buat Booking
+      </div>
+    </div>
+
+    <div class="nav-section">Library</div>
+    <div class="nav-group">
+      <div class="nav-item" id="nav-mybookings" onclick="goTo('mybookings')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Booking Saya
+        <span class="nav-badge" id="booking-badge">0</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      FITK Rooms v1.2 — Stable<br>
+      <span style="color: var(--t2)">Data tersimpan di browser</span>
+    </div>
+  </div>
+
+  <!-- ── Main ── -->
+  <div id="main">
+    <div id="topbar">
+      <div id="page-title">Beranda</div>
+      <div class="search-wrap" id="search-area" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="search-input" placeholder="Cari ruangan..." oninput="doSearch()">
+      </div>
+      <button class="btn btn-green" onclick="goTo('booking')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Booking
+      </button>
+    </div>
+
+    <div id="content">
+
+      <!-- PAGE: Beranda -->
+      <div class="page active" id="page-home">
+        <div class="stat-grid" id="stat-grid"></div>
+        <div id="now-occupied"></div>
+        <div class="sec-header">
+          <span class="sec-title">Semua Ruangan</span>
+          <span class="sec-link" onclick="goTo('rooms')">Lihat semua →</span>
+        </div>
+        <div class="room-grid" id="home-rooms"></div>
+      </div>
+
+      <!-- PAGE: Semua Ruangan -->
+      <div class="page" id="page-rooms">
+        <div class="filter-bar" id="room-filter-bar"></div>
+        <div class="room-grid" id="all-rooms"></div>
+      </div>
+
+      <!-- PAGE: Jadwal Mingguan -->
+      <div class="page" id="page-jadwal">
+        <div class="sched-controls">
+          <label>Ruangan</label>
+          <select class="select-field" id="sched-room" onchange="renderSchedule()"></select>
+          <label>Hari</label>
+          <select class="select-field" id="sched-day" onchange="renderSchedule()">
+            <option value="">Semua Hari</option>
+            <option>Senin</option><option>Selasa</option><option>Rabu</option>
+            <option>Kamis</option><option>Jumat</option><option>Sabtu</option>
+          </select>
+        </div>
+        <div id="schedule-table"></div>
+      </div>
+
+      <!-- PAGE: Buat Booking -->
+      <div class="page" id="page-booking">
+        <div class="form-card">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Ruangan</label>
+              <select class="form-input" id="form-room">
+                <option value="">— Pilih ruangan —</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Nama Peminjam / Organisasi</label>
+              <input class="form-input" id="form-name" type="text" placeholder="Contoh: BEM FITK">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Keperluan / Nama Kegiatan</label>
+              <input class="form-input" id="form-purpose" type="text" placeholder="Contoh: Rapat Proker Semester">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tanggal</label>
+              <input class="form-input" id="form-date" type="date">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hari</label>
+              <input class="form-input" id="form-day-display" type="text" readonly placeholder="Otomatis terisi">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Jam Mulai</label>
+              <input class="form-input" id="form-start" type="time" value="09:00">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Jam Selesai</label>
+              <input class="form-input" id="form-end" type="time" value="11:00">
+            </div>
+          </div>
+          <div class="form-error" id="form-error"></div>
+          <div style="display:flex; gap:10px; margin-top:18px;">
+            <button class="btn btn-green" onclick="submitBooking()">Konfirmasi Booking</button>
+            <button class="btn btn-outline" onclick="resetForm()">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: Booking Saya -->
+      <div class="page" id="page-mybookings">
+        <div class="filter-bar">
+          <div class="chip active" id="bkchip-aktif" onclick="setBookingFilter('aktif', this)">Aktif</div>
+          <div class="chip" id="bkchip-dibatalkan" onclick="setBookingFilter('dibatalkan', this)">Dibatalkan</div>
+          <div class="chip" id="bkchip-all" onclick="setBookingFilter('all', this)">Semua</div>
+        </div>
+        <div id="my-bookings-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal ── -->
+<div id="overlay" onclick="if(event.target===this) closeModal()">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- ── Toasts ── -->
+<div id="toast-container"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+var ROOMS = {
+  '201':      { lantai: 2, kapasitas: 40,  fasilitas: ['AC', 'Proyektor', 'Whiteboard'], gedung: 'FITK' },
+  '202':      { lantai: 2, kapasitas: 40,  fasilitas: ['AC', 'Proyektor', 'Whiteboard'], gedung: 'FITK' },
+  '203':      { lantai: 2, kapasitas: 35,  fasilitas: ['AC', 'Whiteboard'],              gedung: 'FITK' },
+  '204':      { lantai: 2, kapasitas: 35,  fasilitas: ['AC', 'Whiteboard'],              gedung: 'FITK' },
+  '301':      { lantai: 3, kapasitas: 40,  fasilitas: ['AC', 'Proyektor', 'Whiteboard'], gedung: 'FITK' },
+  '302':      { lantai: 3, kapasitas: 40,  fasilitas: ['AC', 'Proyektor', 'Whiteboard'], gedung: 'FITK' },
+  '303':      { lantai: 3, kapasitas: 35,  fasilitas: ['AC', 'Whiteboard'],              gedung: 'FITK' },
+  'LAB-TIK-1':{ lantai: 2, kapasitas: 35, fasilitas: ['AC', 'Komputer', 'Proyektor'],   gedung: 'FITK' },
+  'LAB-TIK-2':{ lantai: 3, kapasitas: 35, fasilitas: ['AC', 'Komputer', 'Proyektor'],   gedung: 'FITK' },
+  'AULA':     { lantai: 1, kapasitas: 300, fasilitas: ['AC', 'Sound System', 'Proyektor', 'Podium'], gedung: 'FITK' },
+  'SEMINAR':  { lantai: 1, kapasitas: 60,  fasilitas: ['AC', 'Proyektor', 'Sound System'], gedung: 'FITK' }
+};
+
+var SCHEDULES = [
+  { id:'JT001', ruangan:'201',       matkul:'Pemrograman Web',            kelas:'TIF-3A', dosen:'Dr. H. Arif Firdaus, M.Kom',      hari:'Senin',  jam_mulai:'07:30', sks:3 },
+  { id:'JT002', ruangan:'202',       matkul:'Basis Data',                 kelas:'TIF-2B', dosen:'Ratna Dewi, M.T',                 hari:'Senin',  jam_mulai:'07:30', sks:3 },
+  { id:'JT003', ruangan:'301',       matkul:'Sistem Operasi',             kelas:'TIF-2A', dosen:'Muhamad Ichsan, M.Kom',           hari:'Senin',  jam_mulai:'10:00', sks:3 },
+  { id:'JT004', ruangan:'LAB-TIK-1', matkul:'Praktikum Basis Data',       kelas:'TIF-2B', dosen:'Ratna Dewi, M.T',                 hari:'Senin',  jam_mulai:'13:00', sks:2 },
+  { id:'JT005', ruangan:'201',       matkul:'Kecerdasan Buatan',          kelas:'TIF-4A', dosen:'Prof. Dr. Toto Sugiarto, M.Pd',  hari:'Selasa', jam_mulai:'07:30', sks:3 },
+  { id:'JT006', ruangan:'203',       matkul:'Jaringan Komputer',          kelas:'TIF-3B', dosen:'Ade Kurniawan, M.T',              hari:'Selasa', jam_mulai:'09:50', sks:3 },
+  { id:'JT007', ruangan:'302',       matkul:'Algoritma & Pemrograman',    kelas:'TIF-1A', dosen:'Neng Siti Fauziah, M.Kom',        hari:'Selasa', jam_mulai:'13:00', sks:3 },
+  { id:'JT008', ruangan:'LAB-TIK-2', matkul:'Praktikum Jaringan',         kelas:'TIF-3B', dosen:'Ade Kurniawan, M.T',              hari:'Selasa', jam_mulai:'07:30', sks:2 },
+  { id:'JT009', ruangan:'202',       matkul:'Rekayasa Perangkat Lunak',   kelas:'TIF-3A', dosen:'Dr. H. Arif Firdaus, M.Kom',     hari:'Rabu',   jam_mulai:'07:30', sks:3 },
+  { id:'JT010', ruangan:'301',       matkul:'Matematika Diskrit',         kelas:'TIF-1B', dosen:'Hendra Permana, M.Si',            hari:'Rabu',   jam_mulai:'10:00', sks:2 },
+  { id:'JT011', ruangan:'204',       matkul:'Interaksi Manusia Komputer', kelas:'TIF-3B', dosen:'Neng Siti Fauziah, M.Kom',        hari:'Rabu',   jam_mulai:'13:00', sks:3 },
+  { id:'JT012', ruangan:'201',       matkul:'Data Mining',                kelas:'TIF-4B', dosen:'Prof. Dr. Toto Sugiarto, M.Pd',  hari:'Kamis',  jam_mulai:'07:30', sks:3 },
+  { id:'JT013', ruangan:'303',       matkul:'Pemrograman Mobile',         kelas:'TIF-4A', dosen:'Muhamad Ichsan, M.Kom',           hari:'Kamis',  jam_mulai:'10:00', sks:3 },
+  { id:'JT014', ruangan:'LAB-TIK-1', matkul:'Praktikum RPL',              kelas:'TIF-3A', dosen:'Dr. H. Arif Firdaus, M.Kom',     hari:'Kamis',  jam_mulai:'13:00', sks:2 },
+  { id:'JT015', ruangan:'302',       matkul:'Etika Profesi IT',           kelas:'TIF-4B', dosen:'Hendra Permana, M.Si',            hari:'Jumat',  jam_mulai:'07:30', sks:2 },
+  { id:'JT016', ruangan:'204',       matkul:'Kapita Selekta',             kelas:'TIF-4A', dosen:'Ratna Dewi, M.T',                 hari:'Jumat',  jam_mulai:'09:00', sks:2 }
+];
+
+var DAY_EN_TO_ID = {
+  Monday:'Senin', Tuesday:'Selasa', Wednesday:'Rabu',
+  Thursday:'Kamis', Friday:'Jumat', Saturday:'Sabtu', Sunday:'Minggu'
+};
+var DAY_ORDER = { Senin:0, Selasa:1, Rabu:2, Kamis:3, Jumat:4, Sabtu:5, Minggu:6 };
+
+// ============================================================
+// STATE
+// ============================================================
+var currentPage = 'home';
+var roomFilterActive = 'all';
+var bookingFilterActive = 'aktif';
+
+// ============================================================
+// STORAGE
+// ============================================================
+function getBookings() {
+  try { return JSON.parse(localStorage.getItem('fitk_bookings') || '[]'); }
+  catch(e) { return []; }
+}
+function saveBookings(data) {
+  localStorage.setItem('fitk_bookings', JSON.stringify(data));
+}
+
+// ============================================================
+// TIME HELPERS
+// ============================================================
+function parseMinutes(timeStr) {
+  var parts = timeStr.split(':');
+  return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+}
+function formatTime(totalMinutes) {
+  var h = Math.floor(totalMinutes / 60);
+  var m = totalMinutes % 60;
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
+function getEndTime(startTime, sks) {
+  return formatTime(parseMinutes(startTime) + sks * 50);
+}
+function getDayFromDate(dateStr) {
+  if (!dateStr) return '';
+  var d = new Date(dateStr + 'T12:00:00');
+  return DAY_EN_TO_ID[d.toLocaleDateString('en-US', { weekday: 'long' })] || '';
+}
+function getCurrentDay() {
+  return DAY_EN_TO_ID[new Date().toLocaleDateString('en-US', { weekday: 'long' })] || '';
+}
+function getCurrentTime() {
+  var n = new Date();
+  return String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+}
+function getTodayStr() {
+  var n = new Date();
+  return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+}
+
+// ============================================================
+// ROOM STATUS
+// ============================================================
+function getRoomStatus(roomId, day, time) {
+  if (!day) return { status: 'available' };
+  var t = parseMinutes(time);
+  for (var i = 0; i < SCHEDULES.length; i++) {
+    var s = SCHEDULES[i];
+    if (s.ruangan !== roomId || s.hari !== day) continue;
+    var start = parseMinutes(s.jam_mulai);
+    var end = start + s.sks * 50;
+    if (t >= start && t < end) return { status: 'occupied', detail: s };
+  }
+  var today = getTodayStr();
+  var bookings = getBookings();
+  for (var j = 0; j < bookings.length; j++) {
+    var b = bookings[j];
+    if (b.ruangan !== roomId || b.tanggal !== today || b.status !== 'aktif') continue;
+    var bStart = parseMinutes(b.jam_mulai);
+    var bEnd = parseMinutes(b.jam_selesai);
+    if (t >= bStart && t < bEnd) return { status: 'booked', detail: b };
+  }
+  return { status: 'available' };
+}
+
+// ============================================================
+// CONFLICT CHECK
+// ============================================================
+function checkConflict(roomId, date, startTime, endTime) {
+  var day = getDayFromDate(date);
+  var t1 = parseMinutes(startTime);
+  var t2 = parseMinutes(endTime);
+  if (t1 >= t2) return { conflict: true, msg: 'Jam mulai harus lebih awal dari jam selesai.' };
+  for (var i = 0; i < SCHEDULES.length; i++) {
+    var s = SCHEDULES[i];
+    if (s.ruangan !== roomId || s.hari !== day) continue;
+    var sStart = parseMinutes(s.jam_mulai);
+    var sEnd = sStart + s.sks * 50;
+    if (t1 < sEnd && t2 > sStart) {
+      return { conflict: true, msg: 'Bentrok jadwal tetap: ' + s.matkul + ' (' + s.kelas + ') ' + day + ' ' + s.jam_mulai + '\u2013' + formatTime(sEnd) };
+    }
+  }
+  var bookings = getBookings();
+  for (var j = 0; j < bookings.length; j++) {
+    var b = bookings[j];
+    if (b.ruangan !== roomId || b.tanggal !== date || b.status !== 'aktif') continue;
+    var bStart = parseMinutes(b.jam_mulai);
+    var bEnd = parseMinutes(b.jam_selesai);
+    if (t1 < bEnd && t2 > bStart) {
+      return { conflict: true, msg: 'Bentrok booking aktif: \u201c' + b.keperluan + '\u201d oleh ' + b.peminjam + ' (' + b.jam_mulai + '\u2013' + b.jam_selesai + ')' };
+    }
+  }
+  return { conflict: false };
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+var PAGE_TITLES = {
+  home: 'Beranda',
+  rooms: 'Semua Ruangan',
+  jadwal: 'Jadwal Mingguan',
+  booking: 'Buat Booking',
+  mybookings: 'Booking Saya'
+};
+
+function goTo(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+  var pageEl = document.getElementById('page-' + page);
+  if (pageEl) pageEl.classList.add('active');
+  var navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+  document.getElementById('page-title').textContent = PAGE_TITLES[page] || '';
+  document.getElementById('search-area').style.display = (page === 'rooms') ? '' : 'none';
+  if (page === 'home')       renderHome();
+  if (page === 'rooms')      renderRoomsPage();
+  if (page === 'jadwal')     renderJadwalPage();
+  if (page === 'booking')    setupBookingForm();
+  if (page === 'mybookings') renderMyBookings();
+  updateBadge();
+}
+
+// ============================================================
+// BADGE
+// ============================================================
+function updateBadge() {
+  var count = getBookings().filter(function(b) { return b.status === 'aktif'; }).length;
+  var badge = document.getElementById('booking-badge');
+  badge.style.display = count > 0 ? '' : 'none';
+  badge.textContent = count;
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type) {
+  var el = document.createElement('div');
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(function() {
+    el.classList.add('out');
+    setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 250);
+  }, 3200);
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ============================================================
+// STATUS LABEL HTML
+// ============================================================
+function statusHTML(status) {
+  if (status === 'occupied') return '<div class="status-dot"><span class="dot dot-red"></span><span style="color:var(--red)">Sedang terpakai</span></div>';
+  if (status === 'booked')   return '<div class="status-dot"><span class="dot dot-amber"></span><span style="color:var(--amber)">Ada booking</span></div>';
+  return '<div class="status-dot"><span class="dot dot-green"></span><span style="color:var(--green)">Tersedia</span></div>';
+}
+
+// ============================================================
+// ROOM CARD HTML
+// ============================================================
+function roomCardHTML(id, day, time) {
+  var info = ROOMS[id];
+  var st = getRoomStatus(id, day, time);
+  var tags = info.fasilitas.map(function(f) { return '<span class="tag">' + f + '</span>'; }).join('');
+  return '<div class="room-card ' + st.status + '" onclick="openRoomModal(\'' + id + '\')">' +
+    '<div class="room-num">' + id + '</div>' +
+    '<div class="room-meta">Gedung ' + info.gedung + ' &middot; Lantai ' + info.lantai + '</div>' +
+    '<div class="room-cap">' + info.kapasitas + ' orang</div>' +
+    '<div class="room-tags">' + tags + '</div>' +
+    statusHTML(st.status) +
+    '</div>';
+}
+
+// ============================================================
+// HOME PAGE
+// ============================================================
+function renderHome() {
+  var day = getCurrentDay();
+  var time = getCurrentTime();
+  var roomIds = Object.keys(ROOMS);
+  var availCount = roomIds.filter(function(id) { return getRoomStatus(id, day, time).status === 'available'; }).length;
+  var activeBookings = getBookings().filter(function(b) { return b.status === 'aktif'; }).length;
+  var classesToday = SCHEDULES.filter(function(s) { return s.hari === day; }).length;
+
+  document.getElementById('stat-grid').innerHTML =
+    '<div class="stat-card"><div class="stat-num">' + roomIds.length + '</div><div class="stat-label">Total Ruangan</div></div>' +
+    '<div class="stat-card green"><div class="stat-num">' + availCount + '</div><div class="stat-label">Tersedia Sekarang</div></div>' +
+    '<div class="stat-card amber"><div class="stat-num">' + classesToday + '</div><div class="stat-label">Kelas Hari Ini' + (day ? ' (' + day + ')' : '') + '</div></div>' +
+    '<div class="stat-card blue"><div class="stat-num">' + activeBookings + '</div><div class="stat-label">Booking Aktif</div></div>';
+
+  var occupied = roomIds.map(function(id) { return { id: id, st: getRoomStatus(id, day, time) }; }).filter(function(x) { return x.st.status !== 'available'; });
+  var nowHTML = '';
+  if (occupied.length > 0) {
+    var cards = occupied.map(function(x) {
+      var d = x.st.detail;
+      var info = x.st.status === 'occupied'
+        ? d.matkul + '<br>' + d.kelas + ' &middot; ' + d.jam_mulai + '&ndash;' + getEndTime(d.jam_mulai, d.sks)
+        : d.keperluan + '<br>' + d.peminjam;
+      return '<div class="now-card ' + (x.st.status === 'booked' ? 'booked' : '') + '">' +
+        '<div class="now-card-room">' + x.id + '</div>' +
+        '<div class="now-card-info">' + info + '</div></div>';
+    }).join('');
+    nowHTML = '<div class="sec-header"><span class="sec-title">&#128308; Sedang Terpakai</span><span style="font-size:12px;color:var(--t3)">' + (day || 'Weekend') + ' &middot; ' + time + '</span></div>' +
+      '<div class="now-strip">' + cards + '</div>';
+  }
+  document.getElementById('now-occupied').innerHTML = nowHTML;
+  document.getElementById('home-rooms').innerHTML = roomIds.map(function(id) { return roomCardHTML(id, day, time); }).join('');
+}
+
+// ============================================================
+// ROOMS PAGE
+// ============================================================
+function renderRoomsPage() {
+  var lantais = [];
+  var seen = {};
+  Object.values(ROOMS).forEach(function(r) { if (!seen[r.lantai]) { seen[r.lantai] = true; lantais.push(r.lantai); } });
+  lantais.sort();
+
+  var filterHTML = '<div class="chip active" onclick="setRoomFilter(\'all\', this)">Semua</div>' +
+    lantais.map(function(l) { return '<div class="chip" onclick="setRoomFilter(\'lt' + l + '\', this)">Lantai ' + l + '</div>'; }).join('') +
+    '<div class="chip" onclick="setRoomFilter(\'lab\', this)">Lab</div>' +
+    '<div class="chip" onclick="setRoomFilter(\'avail\', this)">&#10003; Tersedia</div>';
+  document.getElementById('room-filter-bar').innerHTML = filterHTML;
+  renderFilteredRooms();
+}
+
+function setRoomFilter(filter, el) {
+  roomFilterActive = filter;
+  document.querySelectorAll('#room-filter-bar .chip').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+  renderFilteredRooms();
+}
+
+function doSearch() {
+  renderFilteredRooms();
+}
+
+function renderFilteredRooms() {
+  var day = getCurrentDay();
+  var time = getCurrentTime();
+  var query = (document.getElementById('search-input') ? document.getElementById('search-input').value : '').toLowerCase().trim();
+  var filtered = Object.keys(ROOMS).filter(function(id) {
+    var info = ROOMS[id];
+    var matchQuery = !query || id.toLowerCase().includes(query) || info.fasilitas.some(function(f) { return f.toLowerCase().includes(query); });
+    var st = getRoomStatus(id, day, time).status;
+    var matchFilter =
+      roomFilterActive === 'all' ||
+      (roomFilterActive === 'avail' && st === 'available') ||
+      (roomFilterActive === 'lab' && id.startsWith('LAB')) ||
+      (roomFilterActive === 'lt' + info.lantai);
+    return matchQuery && matchFilter;
+  });
+  var grid = document.getElementById('all-rooms');
+  if (!grid) return;
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128269;</div><p>Tidak ada ruangan yang cocok.</p></div>';
+  } else {
+    grid.innerHTML = filtered.map(function(id) { return roomCardHTML(id, day, time); }).join('');
+  }
+}
+
+// ============================================================
+// ROOM MODAL
+// ============================================================
+function openRoomModal(id) {
+  var info = ROOMS[id];
+  var day = getCurrentDay();
+  var time = getCurrentTime();
+  var st = getRoomStatus(id, day, time);
+  var statusColor = st.status === 'available' ? 'var(--green)' : st.status === 'occupied' ? 'var(--red)' : 'var(--amber)';
+  var statusText = st.status === 'available' ? 'Tersedia' : st.status === 'occupied' ? 'Terpakai (Kelas)' : 'Ada Booking';
+
+  var jt = SCHEDULES.filter(function(s) { return s.ruangan === id; }).sort(function(a, b) {
+    return (DAY_ORDER[a.hari] || 0) - (DAY_ORDER[b.hari] || 0) || a.jam_mulai.localeCompare(b.jam_mulai);
+  });
+  var bk = getBookings().filter(function(b) { return b.ruangan === id && b.status === 'aktif'; }).sort(function(a, b) {
+    return a.tanggal.localeCompare(b.tanggal);
+  });
+
+  var schedHTML = '';
+  if (jt.length > 0) {
+    schedHTML += '<div class="modal-section">Jadwal Tetap</div>';
+    schedHTML += jt.map(function(j) {
+      return '<div class="sched-entry">' +
+        '<div class="sched-header"><span class="sched-day">' + j.hari + '</span><span class="sched-time">' + j.jam_mulai + '&ndash;' + getEndTime(j.jam_mulai, j.sks) + '</span><span class="badge-green">' + j.sks + ' SKS</span></div>' +
+        '<div class="sched-name">' + j.matkul + '</div>' +
+        '<div class="sched-detail">' + j.kelas + ' &middot; ' + j.dosen + '</div></div>';
+    }).join('');
+  }
+  if (bk.length > 0) {
+    schedHTML += '<div class="modal-section">Booking Aktif</div>';
+    schedHTML += bk.map(function(b) {
+      return '<div class="sched-entry">' +
+        '<div class="sched-header"><span class="sched-day">' + getDayFromDate(b.tanggal) + ', ' + b.tanggal + '</span><span class="sched-time">' + b.jam_mulai + '&ndash;' + b.jam_selesai + '</span></div>' +
+        '<div class="sched-name">' + b.keperluan + '</div>' +
+        '<div class="sched-detail">' + b.peminjam + ' &middot; <span style="color:var(--amber)">' + b.id + '</span></div></div>';
+    }).join('');
+  }
+
+  var html = '<button class="modal-close" onclick="closeModal()">&#10005;</button>' +
+    '<div class="modal-title">Ruangan ' + id + '</div>' +
+    '<div class="modal-sub">Gedung ' + info.gedung + ' &middot; Lantai ' + info.lantai + '</div>' +
+    '<div class="modal-row">' +
+      '<div><div class="modal-field-label">Kapasitas</div><div class="modal-field-val">' + info.kapasitas + ' orang</div></div>' +
+      '<div><div class="modal-field-label">Lantai</div><div class="modal-field-val">Lantai ' + info.lantai + '</div></div>' +
+      '<div><div class="modal-field-label">Status</div><div class="modal-field-val" style="color:' + statusColor + '">' + statusText + '</div></div>' +
+    '</div>' +
+    '<div class="modal-field-label" style="margin-bottom:6px">Fasilitas</div>' +
+    '<div class="chip-row">' + info.fasilitas.map(function(f) { return '<span class="chip-small">' + f + '</span>'; }).join('') + '</div>' +
+    (schedHTML ? '<hr class="divider">' + schedHTML : '') +
+    '<hr class="divider">' +
+    '<button class="btn btn-green" style="width:100%" onclick="bookFromModal(\'' + id + '\')">+ Booking Ruangan Ini</button>';
+
+  openModal(html);
+}
+
+function bookFromModal(id) {
+  closeModal();
+  goTo('booking');
+  setTimeout(function() {
+    var sel = document.getElementById('form-room');
+    if (sel) sel.value = id;
+  }, 100);
+}
+
+// ============================================================
+// JADWAL PAGE
+// ============================================================
+function renderJadwalPage() {
+  var sel = document.getElementById('sched-room');
+  if (sel.options.length === 0) {
+    Object.keys(ROOMS).forEach(function(id) {
+      var opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = 'Ruangan ' + id;
+      sel.appendChild(opt);
+    });
+  }
+  renderSchedule();
+}
+
+function renderSchedule() {
+  var room = document.getElementById('sched-room').value;
+  var day  = document.getElementById('sched-day').value;
+  var jt = SCHEDULES.filter(function(j) {
+    return j.ruangan === room && (!day || j.hari === day);
+  }).sort(function(a, b) {
+    return (DAY_ORDER[a.hari] || 0) - (DAY_ORDER[b.hari] || 0) || a.jam_mulai.localeCompare(b.jam_mulai);
+  });
+  var bk = getBookings().filter(function(b) {
+    return b.ruangan === room && b.status === 'aktif' && (!day || getDayFromDate(b.tanggal) === day);
+  }).sort(function(a, b) {
+    return a.tanggal.localeCompare(b.tanggal) || a.jam_mulai.localeCompare(b.jam_mulai);
+  });
+  var container = document.getElementById('schedule-table');
+  if (!jt.length && !bk.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128197;</div><p>Tidak ada jadwal untuk ruangan ' + room + (day ? ' pada ' + day : '') + '.</p></div>';
+    return;
+  }
+  var rows = jt.map(function(j) {
+    return '<tr><td style="color:var(--t1);font-weight:500">' + j.hari + '</td>' +
+      '<td style="color:var(--t2)">' + j.jam_mulai + '&ndash;' + getEndTime(j.jam_mulai, j.sks) + '</td>' +
+      '<td><div class="td-main">' + j.matkul + '</div><div class="td-sub">' + j.kelas + ' &middot; ' + j.sks + ' SKS</div></td>' +
+      '<td><span class="badge-green">Jadwal Tetap</span><div class="td-sub" style="margin-top:4px">' + j.dosen + '</div></td></tr>';
+  });
+  rows = rows.concat(bk.map(function(b) {
+    return '<tr><td style="color:var(--amber)">' + getDayFromDate(b.tanggal) + ', ' + b.tanggal + '</td>' +
+      '<td style="color:var(--t2)">' + b.jam_mulai + '&ndash;' + b.jam_selesai + '</td>' +
+      '<td><div class="td-main">' + b.keperluan + '</div><div class="td-sub">' + b.peminjam + '</div></td>' +
+      '<td><span class="badge-amber">Booking</span><div class="td-sub" style="margin-top:4px">' + b.id + '</div></td></tr>';
+  }));
+  container.innerHTML = '<table class="data-table"><thead><tr><th>Hari / Tanggal</th><th>Waktu</th><th>Kegiatan</th><th>Keterangan</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>';
+}
+
+// ============================================================
+// BOOKING FORM
+// ============================================================
+function setupBookingForm() {
+  var sel = document.getElementById('form-room');
+  if (sel.options.length <= 1) {
+    Object.keys(ROOMS).forEach(function(id) {
+      var opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = id + ' \u2014 Lantai ' + ROOMS[id].lantai + ' (' + ROOMS[id].kapasitas + ' org)';
+      sel.appendChild(opt);
+    });
+  }
+  var dateInput = document.getElementById('form-date');
+  dateInput.min = getTodayStr();
+  dateInput.onchange = function() {
+    document.getElementById('form-day-display').value = getDayFromDate(this.value) || '';
+    document.getElementById('form-error').style.display = 'none';
+  };
+}
+
+function resetForm() {
+  document.getElementById('form-room').value = '';
+  document.getElementById('form-name').value = '';
+  document.getElementById('form-purpose').value = '';
+  document.getElementById('form-date').value = '';
+  document.getElementById('form-day-display').value = '';
+  document.getElementById('form-start').value = '09:00';
+  document.getElementById('form-end').value = '11:00';
+  document.getElementById('form-error').style.display = 'none';
+}
+
+function submitBooking() {
+  var room    = document.getElementById('form-room').value;
+  var name    = document.getElementById('form-name').value.trim();
+  var purpose = document.getElementById('form-purpose').value.trim();
+  var date    = document.getElementById('form-date').value;
+  var start   = document.getElementById('form-start').value;
+  var end     = document.getElementById('form-end').value;
+  var errEl   = document.getElementById('form-error');
+
+  if (!room || !name || !purpose || !date || !start || !end) {
+    errEl.textContent = 'Semua field wajib diisi.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  var check = checkConflict(room, date, start, end);
+  if (check.conflict) {
+    errEl.textContent = check.msg;
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  var bookings = getBookings();
+  var existingIds = bookings.map(function(b) { return b.id; });
+  var n = bookings.length + 1;
+  while (existingIds.indexOf('BK' + String(n).padStart(3,'0')) !== -1) n++;
+  var newId = 'BK' + String(n).padStart(3,'0');
+
+  bookings.push({
+    id: newId,
+    ruangan: room,
+    peminjam: name,
+    keperluan: purpose,
+    tanggal: date,
+    jam_mulai: start,
+    jam_selesai: end,
+    tipe: 'sementara',
+    status: 'aktif',
+    dibuat_pada: new Date().toLocaleString('id-ID')
+  });
+  saveBookings(bookings);
+  updateBadge();
+  showToast('Booking ' + newId + ' berhasil disimpan!', 'green');
+  resetForm();
+  setTimeout(function() { goTo('mybookings'); }, 600);
+}
+
+// ============================================================
+// MY BOOKINGS PAGE
+// ============================================================
+function setBookingFilter(filter, el) {
+  bookingFilterActive = filter;
+  document.querySelectorAll('#page-mybookings .chip').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+  renderMyBookings();
+}
+
+function renderMyBookings() {
+  var all = getBookings();
+  var filtered = bookingFilterActive === 'all' ? all : all.filter(function(b) { return b.status === bookingFilterActive; });
+  filtered.sort(function(a, b) {
+    return a.tanggal.localeCompare(b.tanggal) || a.jam_mulai.localeCompare(b.jam_mulai);
+  });
+  var container = document.getElementById('my-bookings-list');
+  if (!filtered.length) {
+    var msg = bookingFilterActive === 'aktif' ? 'aktif' : bookingFilterActive === 'dibatalkan' ? 'yang dibatalkan' : '';
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128203;</div><p>Tidak ada booking ' + msg + '.</p></div>';
+    return;
+  }
+  container.innerHTML = filtered.map(function(b) {
+    var isAktif = b.status === 'aktif';
+    var cancelBtn = isAktif
+      ? '<button class="btn btn-red btn-sm" onclick="promptCancel(\'' + b.id + '\')">Batalkan</button>'
+      : '';
+    return '<div class="booking-item">' +
+      '<div class="booking-room">' + b.ruangan + '</div>' +
+      '<div class="booking-info">' +
+        '<div class="booking-id">' + b.id + '</div>' +
+        '<div class="booking-title">' + b.keperluan + '</div>' +
+        '<div class="booking-meta">' +
+          getDayFromDate(b.tanggal) + ', ' + b.tanggal + ' &middot; ' + b.jam_mulai + '&ndash;' + b.jam_selesai + '<br>' +
+          'Peminjam: ' + b.peminjam + '<br>' +
+          'Dibuat: ' + b.dibuat_pada +
+          (b.dibatalkan_pada ? '<br>Dibatalkan: ' + b.dibatalkan_pada : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="booking-actions">' +
+        '<span class="status-pill ' + (isAktif ? 'aktif' : 'batal') + '">' + (isAktif ? 'Aktif' : 'Dibatalkan') + '</span>' +
+        cancelBtn +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ============================================================
+// CANCEL BOOKING
+// ============================================================
+function promptCancel(bookingId) {
+  var bookings = getBookings();
+  var booking = null;
+  for (var i = 0; i < bookings.length; i++) {
+    if (bookings[i].id === bookingId) { booking = bookings[i]; break; }
+  }
+  if (!booking) return;
+
+  var html = '<button class="modal-close" onclick="closeModal()">&#10005;</button>' +
+    '<div class="modal-title">Batalkan Booking</div>' +
+    '<div class="modal-sub">ID: ' + bookingId + ' &middot; ' + booking.keperluan + ' &middot; ' + booking.ruangan + '</div>' +
+    '<div class="form-group" style="margin-bottom:14px">' +
+      '<label class="form-label">Konfirmasi nama peminjam</label>' +
+      '<input class="form-input" id="cancel-name-input" type="text" placeholder="' + booking.peminjam + '">' +
+    '</div>' +
+    '<div id="cancel-error" style="font-size:12.5px;color:var(--red);margin-bottom:12px;display:none;padding:8px 12px;background:var(--red-dim);border-radius:6px;"></div>' +
+    '<div style="display:flex;gap:8px">' +
+      '<button class="btn btn-red" onclick="doCancel(\'' + bookingId + '\')">Ya, Batalkan</button>' +
+      '<button class="btn btn-outline" onclick="closeModal()">Kembali</button>' +
+    '</div>';
+  openModal(html);
+}
+
+function doCancel(bookingId) {
+  var nameInput = document.getElementById('cancel-name-input');
+  var errEl = document.getElementById('cancel-error');
+  if (!nameInput) return;
+  var inputName = nameInput.value.trim();
+  var bookings = getBookings();
+  var booking = null;
+  for (var i = 0; i < bookings.length; i++) {
+    if (bookings[i].id === bookingId) { booking = bookings[i]; break; }
+  }
+  if (!booking) { closeModal(); return; }
+  if (inputName.toLowerCase() !== booking.peminjam.toLowerCase()) {
+    errEl.textContent = 'Nama peminjam tidak cocok. Coba lagi.';
+    errEl.style.display = 'block';
+    return;
+  }
+  booking.status = 'dibatalkan';
+  booking.dibatalkan_pada = new Date().toLocaleString('id-ID');
+  saveBookings(bookings);
+  closeModal();
+  updateBadge();
+  showToast('Booking ' + bookingId + ' berhasil dibatalkan.', 'red');
+  renderMyBookings();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+  renderHome();
+  updateBadge();
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+});
+</script>
+</body>
+</html>
