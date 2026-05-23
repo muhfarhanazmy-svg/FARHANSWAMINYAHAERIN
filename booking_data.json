@@ -1,0 +1,52 @@
+{
+  "gedung": [
+    {
+      "id": 1,
+      "nama": "Aula Utama",
+      "kapasitas": 100,
+      "fasilitas": "AC, Proyektor, Sound System"
+    },
+    {
+      "id": 2,
+      "nama": "Lab Komputer 1",
+      "kapasitas": 30,
+      "fasilitas": "AC, 30 PC, Proyektor"
+    },
+    {
+      "id": 3,
+      "nama": "Lab Komputer 2",
+      "kapasitas": 30,
+      "fasilitas": "AC, 30 PC"
+    },
+    {
+      "id": 4,
+      "nama": "Ruang Rapat",
+      "kapasitas": 20,
+      "fasilitas": "AC, Whiteboard, TV 55\""
+    }
+  ],
+  "bookings": [
+    {
+      "id": "BK-001",
+      "gedung_id": 1,
+      "nama": "paan",
+      "keperluan": "makan",
+      "tanggal": "28/04/2026",
+      "jam_mulai": "13:00",
+      "jam_selesai": "15:00",
+      "durasi": 2.0,
+      "created_at": "30/04/2026 14:55"
+    },
+    {
+      "id": "BK-002",
+      "gedung_id": 2,
+      "nama": "jawa",
+      "keperluan": "tidur",
+      "tanggal": "30/04/2026",
+      "jam_mulai": "15:00",
+      "jam_selesai": "18:00",
+      "durasi": 3.0,
+      "created_at": "30/04/2026 14:55"
+    }
+  ]
+}

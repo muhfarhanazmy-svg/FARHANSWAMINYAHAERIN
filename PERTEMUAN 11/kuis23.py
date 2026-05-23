@@ -2,7 +2,7 @@ def tahun_kabisat(tahun):
     if (tahun % 4 == 0 and tahun % 100 != 0) or (tahun % 400 == 0):
         return True
     
-    return False
+    return False 
 
 data_uji =[1900, 2000, 2016, 1987]
 data_hasil = [False, True, True, False]
